@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Delete, Get, Post, Put, Response } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ExpansesResources } from './expanses.resource';
 import { ExpanseRestModel } from '../restmodels/expanse.restmodel';
 import { FindExpansesUseCase } from 'src/domain/expanses/usecases/findexpanses.usecase';
@@ -31,30 +31,30 @@ export class ExpansesController implements ExpansesResources {
     }
 
     @Get('/:id')
-    async findOne(id: number): Promise<ExpanseRestModel> {
+    async findOne(@Param('id') id: number): Promise<ExpanseRestModel> {
         const response = await this.findE.execute(id);
         if(Array.isArray(response))
-            throw new Error('Não é um array');
+            throw new Error('é um array');
         const data = this.convert.mapToRestModel(response);
         return data;
     }
 
     @Post()
-    async create(restmodel: ExpanseRestModel): Promise<ExpanseRestModel> {
+    async create(@Body() restmodel: ExpanseRestModel): Promise<ExpanseRestModel> {
         const entity = this.convert.mapToEntity(restmodel);
         const response = await this.creatE.execute(entity);
         return response;
     }
 
     @Put('/:id')
-    async update(id: number, restmodel: ExpanseRestModel): Promise<ExpanseRestModel> {
+    async update(@Param('id') id: number, @Body() restmodel: ExpanseRestModel): Promise<ExpanseRestModel> {
         const entity = this.convert.mapToEntity(restmodel);
         const response = await this.updatE.execute(entity);
         return response;
     }
 
     @Delete('/:id')
-    async delete(id: number): Promise<boolean> {
+    async delete(@Param('id') id: number): Promise<boolean> {
         return await this.deletE.execute(id);
     }
   

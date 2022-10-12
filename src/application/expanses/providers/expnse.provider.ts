@@ -8,6 +8,8 @@ import { ExpanseEntity } from 'src/domain/expanses/entities/expanse.entity';
 export class ExpanseProvider implements ExpanseDataProvider {
 
     async find(id: number): Promise<ExpanseEntity | ExpanseEntity[]> {
+        if(id)
+            return new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10'));
         return [
             new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10')),
             new ExpanseEntity(2,'Água', 77.55, 'saída', 'recorrente', new Date('2020-01-10')),
