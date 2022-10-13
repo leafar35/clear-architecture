@@ -3,33 +3,43 @@
 import { Injectable } from '@nestjs/common';
 import { ExpanseDataProvider } from 'src/domain/expanses/dataprovider/expanse.dataprovider';
 import { ExpanseEntity } from 'src/domain/expanses/entities/expanse.entity';
+import { ExpanseModelConverter } from './converts/expanse.model.converter';
+import ExpanseRepository from './repositories/expanse.repository';
 
 @Injectable()
 export class ExpanseProvider implements ExpanseDataProvider {
 
+    constructor(
+        private readonly repository: ExpanseRepository,
+        private readonly converter: ExpanseModelConverter
+    ){}
+
     async find(id: number): Promise<ExpanseEntity | ExpanseEntity[]> {
-        if(id)
-            return new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10'));
-        return [
-            new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10')),
-            new ExpanseEntity(2,'Água', 77.55, 'saída', 'recorrente', new Date('2020-01-10')),
-            new ExpanseEntity(3,'Telefone', 50.55, 'saída', 'recorrente', new Date('2020-01-10')),
-            new ExpanseEntity(4,'Plano de Saúde', 43.55, 'saída', 'recorrente', new Date('2020-01-10')),
-            new ExpanseEntity(5,'ompras do mês', 10.55, 'saída', 'eventual', new Date('2020-01-10')),
-            new ExpanseEntity(1,'Lanche', 85.55, 'saída', 'eventual', new Date('2020-01-10')),
-        ]
+        let data: any;
+        if(id){
+            data = await this.repository.findOne({
+                where: { id: id}
+            });
+            return this.converter.mapToEntity(data);
+        }
+        data = await this.repository.find();
+        return this.converter.mapToListEntity(data);
     }
 
     async create(entity: ExpanseEntity): Promise<ExpanseEntity> {
-        return new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10'));
+        const model = this.converter.mapToModel(entity);
+        const data = await this.repository.save(model);
+        return this.converter.mapToEntity(data);
     }
 
     async Update(entity: ExpanseEntity): Promise<ExpanseEntity> {
-        return new ExpanseEntity(1,'nergia elétrica', 150.55, 'saída', 'recorrente', new Date('2020-01-10'));
+        const data = await this.repository.save(entity);
+        return this.converter.mapToEntity(data);
     }
 
     async delete(id: number): Promise<boolean> {
-        return true;
+        const result = await this.repository.delete(id);
+        return (result.affected !== 0);
     }
   
 }

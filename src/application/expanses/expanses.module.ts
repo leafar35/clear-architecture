@@ -1,5 +1,8 @@
 /* eslint-disable prettier/prettier */
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ExpanseDataProvider } from 'src/domain/expanses/dataprovider/expanse.dataprovider';
 import { CreateExpanseService } from 'src/domain/expanses/services/createexpanses.service';
 import { DeleteExpanseService } from 'src/domain/expanses/services/deleteexpanses.service';
@@ -11,7 +14,10 @@ import { FindExpansesUseCase } from 'src/domain/expanses/usecases/findexpanses.u
 import { UpdateExpansesUseCase } from 'src/domain/expanses/usecases/updateexpanses.usecase';
 import { ExpanseRestModelConverter } from './converters/expanse.restmodel.converter';
 import { ExpanseRestModelConverterArray } from './converters/expanse.restmodel.converterArray';
+import { ExpanseModelConverter } from './providers/converts/expanse.model.converter';
 import { ExpanseProvider } from './providers/expnse.provider';
+import ExpanseModel from './providers/models/expanse.model';
+import ExpanseRepository from './providers/repositories/expanse.repository';
 import { ExpansesController } from './resources/expanses.controller';
 
 const expansiveprovider = {
@@ -40,16 +46,22 @@ const deleteExpansiveExporte = {
 };
 
 @Module({
-  imports: [],
+  imports: [
+    ConfigModule,
+    HttpModule,
+    TypeOrmModule.forFeature([ExpanseModel]),
+  ],
   controllers: [ExpansesController],
   providers: [
     ExpanseRestModelConverterArray,
     ExpanseRestModelConverter,
+    ExpanseModelConverter,
     expansiveprovider,
     createExpansiveExporte,
     updateExpansiveExporte,
     deleteExpansiveExporte,
-    findExpansiveExporte
+    findExpansiveExporte,
+    ExpanseRepository
   ],
 })
 export class ExpansesModule {}
