@@ -13,8 +13,12 @@ export class FindExpanseService implements FindExpansesUseCase {
     ){}
     
     async execute(id?: number): Promise<Array<ExpanseEntity> | ExpanseEntity> {
-        const response = await this.provider.find(id);
-        return response;
+        try{
+            const response = await this.provider.find(id);
+            return response;
+        }catch(e){
+            throw new Error('Não foi possivel buscar o(s) gastos');
+        }
     }
 
   

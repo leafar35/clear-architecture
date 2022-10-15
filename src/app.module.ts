@@ -2,6 +2,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthenticatedModule } from './application/authenticated/authenticated.module';
 import { ExpansesModule } from './application/expanses/expanses.module';
 
 @Module({
@@ -15,7 +16,8 @@ import { ExpansesModule } from './application/expanses/expanses.module';
       entities: [__dirname + "/**/*.model{.ts,.js}"],
       synchronize: true
     }),
-    ExpansesModule
+    ExpansesModule,
+    AuthenticatedModule
   ],
   controllers: [],
   providers: [],
