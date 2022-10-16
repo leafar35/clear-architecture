@@ -5,6 +5,7 @@ import { ExpanseEntity } from "src/domain/expanses/entities/expanse.entity";
 import { ExpanseDataProvider } from "src/domain/expanses/dataprovider/expanse.dataprovider";
 import { CreateExpanseService } from "src/domain/expanses/services/createexpanses.service";
 import { CreateExpansesUseCase } from "src/domain/expanses/usecases/createexpanses.usecase";
+import { ExpansesCustomError } from "src/domain/expanses/exception/expanses.error";
 
 describe('create expanse usecase', () => {
   let usecase: CreateExpansesUseCase;
@@ -30,6 +31,11 @@ describe('create expanse usecase', () => {
     provider.create.mockResolvedValue(null);
     const response = await usecase.execute(entity);
     expect(response).toBeNull();
+  });
+
+  it('throw message treated create entity', async () => {
+    provider.create.mockRejectedValue(ExpansesCustomError);
+    expect(async() => { await usecase.execute(entity) }).rejects.toThrow(ExpansesCustomError);
   });
 
 });

@@ -10,6 +10,8 @@ import { AuthenticateController } from './resources/authenticate.controller';
 import { AuthenticateService } from 'src/domain/authenticated/services/authenticate.service';
 import { AuthenticateUseCase } from 'src/domain/authenticated/usecases/authenticate.usecase';
 import { AuthenticateDataProvider } from 'src/domain/authenticated/dataprovider/authenticate.dataprovider';
+import { UserModelConverter } from './converters/usermodel.converter';
+import { JwtModule } from '@nestjs/jwt';
 
 const authenticatedataproviderexport = {
   provide: AuthenticateDataProvider,
@@ -25,12 +27,18 @@ const authenticateexportusecase = {
   imports: [
     ConfigModule,
     HttpModule,
+    JwtModule.register({
+      secret: '123456',
+      signOptions: { expiresIn: '1d'}
+    }),
     TypeOrmModule.forFeature([UserModel, UserRepository]),
   ],
   controllers: [AuthenticateController],
   providers: [
+    UserModelConverter,
     authenticatedataproviderexport,
-    authenticateexportusecase
+    authenticateexportusecase,
+    UserRepository
   ],
 })
 export class AuthenticatedModule {}

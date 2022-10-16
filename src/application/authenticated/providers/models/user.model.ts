@@ -8,15 +8,18 @@ export default class UserModel extends BaseEntity {
     id: number;
 
     @Column()
+    name: string;
+
+    @Column()
     email: string;
 
     @Column()
     password: string;
 
-    @Column()
-    createAt: string;
+    @Column({nullable: true})
+    createAt?: Date;
 
-    @Column()
-    updateAt: string;
+    @Column({nullable: true})
+    updateAt?: Date;
 
 }

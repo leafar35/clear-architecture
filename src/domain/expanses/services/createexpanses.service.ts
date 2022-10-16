@@ -3,6 +3,7 @@
 import { Injectable } from '@nestjs/common';
 import { ExpanseDataProvider } from '../dataprovider/expanse.dataprovider';
 import { ExpanseEntity } from '../entities/expanse.entity';
+import { ExpansesCustomError } from '../exception/expanses.error';
 import { CreateExpansesUseCase } from '../usecases/createexpanses.usecase';
 
 @Injectable()
@@ -13,8 +14,12 @@ export class CreateExpanseService implements CreateExpansesUseCase {
     ){}
     
     async execute(entity: ExpanseEntity): Promise<ExpanseEntity> {
-        const response = await this.provider.create(entity);
-        return response;
+        try{
+            const response = await this.provider.create(entity);
+            return response;
+        }catch(e){
+            throw new ExpansesCustomError;
+        }
     }
 
   
